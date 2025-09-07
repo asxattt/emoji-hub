@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>EmojiHub</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Каталог эмодзи</h1>
+
+    <!-- Форма поиска -->
+    <form method="get" action="/emojis">
+        <input type="text" name="q" placeholder="Поиск по имени" value="{{ request.args.get('q', '') }}">
+        <!-- Сохраняем выбранную категорию при поиске -->
+        <input type="hidden" name="category" value="{{ request.args.get('category', '') }}">
+        <input type="hidden" name="sort" value="{{ request.args.get('sort', '') }}">
+        <button type="submit">Найти</button>
+    </form>
+
+    <!-- Фильтр по категории -->
+    <form method="get" action="/emojis">
+        <select name="category">
+            <option value="">Все категории</option>
+            <option value="animals-and-nature" {% if request.args.get('category')=='animals-and-nature' %}selected{% endif %}>Животные и природа</option>
+            <option value="food-and-drink" {% if request.args.get('category')=='food-and-drink' %}selected{% endif %}>Еда и напитки</option>
+            <option value="smileys-and-people" {% if request.args.get('category')=='smileys-and-people' %}selected{% endif %}>Смайлы и люди</option>
+            <option value="travel-and-places" {% if request.args.get('category')=='travel-and-places' %}selected{% endif %}>Путешествия и места</option>
+            <option value="activities" {% if request.args.get('category')=='activities' %}selected{% endif %}>Активности</option>
+            <option value="objects" {% if request.args.get('category')=='objects' %}selected{% endif %}>Предметы</option>
+            <option value="symbols" {% if request.args.get('category')=='symbols' %}selected{% endif %}>Символы</option>
+            <option value="flags" {% if request.args.get('category')=='flags' %}selected{% endif %}>Флаги</option>
+        </select>
+        <!-- Сохраняем текущий поиск и сортировку -->
+        <input type="hidden" name="q" value="{{ request.args.get('q', '') }}">
+        <input type="hidden" name="sort" value="{{ request.args.get('sort', '') }}">
+        <button type="submit">Фильтровать</button>
+    </form>
+
+    <!-- Сортировка -->
+    <form method="get" action="/emojis">
+        <select name="sort">
+            <option value="">Без сортировки</option>
+            <option value="asc" {% if request.args.get('sort')=='asc' %}selected{% endif %}>По алфавиту (А-Я)</option>
+            <option value="desc" {% if request.args.get('sort')=='desc' %}selected{% endif %}>По алфавиту (Я-А)</option>
+        </select>
+        <!-- Сохраняем текущий поиск и категорию -->
+        <input type="hidden" name="q" value="{{ request.args.get('q', '') }}">
+        <input type="hidden" name="category" value="{{ request.args.get('category', '') }}">
+        <button type="submit">Сортировать</button>
+    </form>
+
+    <!-- Список эмодзи -->
+    <ul>
+        {% for e in emojis %}
+        <li>
+            {{ e.htmlCode[0] | safe }} — {{ e.name }} ({{ e.category }})
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
